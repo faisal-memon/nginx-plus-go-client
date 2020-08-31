@@ -688,6 +688,7 @@ func (client *NginxClient) post(path string, input interface{}) error {
 	if err != nil {
 		return fmt.Errorf("failed to post %v: %v", path, err)
 	}
+	io.Copy(ioutil.Discard, resp.Body)
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusCreated {
 		return createResponseMismatchError(resp.Body).Wrap(fmt.Sprintf(

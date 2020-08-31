@@ -4,3 +4,6 @@
 
 # Visual Studio Code settings
 .vscode
+
+# Miscellaneous
+*.swp
