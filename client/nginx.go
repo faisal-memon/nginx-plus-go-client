@@ -36,6 +36,7 @@ var (
 type NginxClient struct {
 	apiEndpoint string
 	httpClient  *http.Client
+	int         Generation
 }
 
 type versions []int
@@ -677,6 +678,15 @@ func (client *NginxClient) get(path string, data interface{}) error {
 }
 
 func (client *NginxClient) post(path string, input interface{}) error {
+	info, err := client.GetNginxInfo()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get stats: %v", err)
+	}
+
+	if info.Generation != client.Generation {
+		return nil, fmt.Errorf("Wrong generation")
+	}
+
 	url := fmt.Sprintf("%v/%v/%v", client.apiEndpoint, APIVersion, path)
 
 	jsonInput, err := json.Marshal(input)
