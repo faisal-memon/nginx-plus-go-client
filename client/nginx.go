@@ -36,7 +36,7 @@ var (
 type NginxClient struct {
 	apiEndpoint string
 	httpClient  *http.Client
-	int         Generation
+	Generation  int
 }
 
 type versions []int
