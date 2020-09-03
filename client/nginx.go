@@ -1,11 +1,13 @@
 package client
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"reflect"
 	"strings"
@@ -678,6 +680,18 @@ func (client *NginxClient) get(path string, data interface{}) error {
 }
 
 func (client *NginxClient) post(path string, input interface{}) error {
+	// var info NginxInfo
+	c, err := net.Dial("tcp", "localhost:8886")
+        if err != nil {
+		return err
+	}
+	fmt.Fprintf(c, "GET /api/6/nginx\n")
+	message, err := bufio.NewReader(c).ReadString('\n')
+        if err != nil {
+		return err
+	}
+	fmt.Println(message)
+
 	info, err := client.GetNginxInfo()
 	if err != nil {
 		return fmt.Errorf("failed to get stats: %v", err)
@@ -698,7 +712,10 @@ func (client *NginxClient) post(path string, input interface{}) error {
 	if err != nil {
 		return fmt.Errorf("failed to post %v: %v", path, err)
 	}
-	io.Copy(ioutil.Discard, resp.Body)
+	_, err = io.Copy(ioutil.Discard, resp.Body)
+	if err != nil {
+		return err
+	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusCreated {
 		return createResponseMismatchError(resp.Body).Wrap(fmt.Sprintf(
