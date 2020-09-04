@@ -715,6 +715,7 @@ func (client *NginxClient) post(path string, input interface{}) error {
 		return fmt.Errorf("failed to marshall input: %v", err)
 	}
 
+	log.Println(string(jsonInput))
 	fmt.Fprintf(c, "POST /api/6/"+path+" HTTP/1.1\r\nHost: localhost:8886\r\n\r\n" + string(jsonInput))
 	resp, err := http.ReadResponse(br, nil)
 	/*resp, err := client.httpClient.Post(url, "application/json", bytes.NewBuffer(jsonInput))
