@@ -681,7 +681,7 @@ func (client *NginxClient) get(path string, data interface{}) error {
 }
 
 func (client *NginxClient) post(path string, input interface{}) error {
-	// var info NginxInfo
+	var info NginxInfo
 	c, err := net.Dial("tcp", "localhost:8886")
         if err != nil {
 		return fmt.Errorf("failed to Dial: %v", err)
@@ -698,12 +698,11 @@ func (client *NginxClient) post(path string, input interface{}) error {
 	if err != nil {
 		return fmt.Errorf("failed to read the response body: %v", err)
 	}
-	log.Println(body)
-
-	info, err := client.GetNginxInfo()
+	err = json.Unmarshal(body, &info)
 	if err != nil {
-		return fmt.Errorf("failed to get stats: %v", err)
+		return fmt.Errorf("error unmarshaling response %q: %v", string(body), err)
 	}
+	log.Printf("generation: %d", info.Generation)
 
 	if info.Generation != client.Generation {
 		return fmt.Errorf("Wrong generation %v, expected %v", info.Generation, client.Generation)
