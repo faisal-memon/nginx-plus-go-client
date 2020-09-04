@@ -688,11 +688,17 @@ func (client *NginxClient) post(path string, input interface{}) error {
 	}
 	defer c.Close()
 	fmt.Fprintf(c, "GET /api/6/nginx HTTP/1.1\r\nHost: localhost:8886\r\n\r\n")
-	message, err := bufio.NewReader(c).ReadString('\n')
+	br := bufio.NewReader(c)
+	response, err := http.ReadResponse(br, nil)
         if err != nil {
-		return fmt.Errorf("bufio failed: %v", err)
+		return fmt.Errorf("ReadResponse failed: %v", err)
 	}
-	log.Println(message)
+	defer response.Body.Close()
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return fmt.Errorf("failed to read the response body: %v", err)
+	}
+	log.Println(body)
 
 	info, err := client.GetNginxInfo()
 	if err != nil {
