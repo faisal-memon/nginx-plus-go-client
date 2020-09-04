@@ -687,7 +687,7 @@ func (client *NginxClient) post(path string, input interface{}) error {
 		return fmt.Errorf("failed to Dial: %v", err)
 	}
 	defer c.Close()
-	fmt.Fprintf(c, "GET /api/6/nginx HTTP/1.1\r\n\r\nHost: localhost:8886")
+	fmt.Fprintf(c, "GET /api/6/nginx HTTP/1.1\r\nHost: localhost:8886\r\n\r\n")
 	message, err := bufio.NewReader(c).ReadString('\n')
         if err != nil {
 		return fmt.Errorf("bufio failed: %v", err)
