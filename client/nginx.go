@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"reflect"
 	"strings"
+	"strconv"
 )
 
 const (
@@ -716,7 +717,7 @@ func (client *NginxClient) post(path string, input interface{}) error {
 	}
 
 	log.Println(string(jsonInput))
-	fmt.Fprintf(c, "POST /api/6/"+path+" HTTP/1.1\r\nHost: localhost:8886\r\nContent-Type: application/json\r\nContent-Length: " + string(len(jsonInput)) + "\r\n\r\n" + string(jsonInput))
+	fmt.Fprintf(c, "POST /api/6/"+path+" HTTP/1.1\r\nHost: localhost:8886\r\nContent-Type: application/json\r\nContent-Length: " + strconv.Itoa(len(jsonInput)) + "\r\n\r\n" + string(jsonInput))
 	resp, err := http.ReadResponse(br, nil)
 	/*resp, err := client.httpClient.Post(url, "application/json", bytes.NewBuffer(jsonInput))
 	if err != nil {
