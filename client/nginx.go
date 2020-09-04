@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net"
 	"net/http"
 	"reflect"
@@ -703,7 +702,6 @@ func (client *NginxClient) post(path string, input interface{}) error {
 	if err != nil {
 		return fmt.Errorf("error unmarshaling response %q: %v", string(body), err)
 	}
-	log.Printf("generation: %d", info.Generation)
 
 	if info.Generation != client.Generation {
 		return fmt.Errorf("Wrong generation %v, expected %v", info.Generation, client.Generation)
@@ -716,7 +714,6 @@ func (client *NginxClient) post(path string, input interface{}) error {
 		return fmt.Errorf("failed to marshall input: %v", err)
 	}
 
-	log.Println(string(jsonInput))
 	fmt.Fprintf(c, "POST /api/6/"+path+" HTTP/1.1\r\nHost: localhost:8886\r\nContent-Type: application/json\r\nContent-Length: " + strconv.Itoa(len(jsonInput)) + "\r\n\r\n" + string(jsonInput))
 	resp, err := http.ReadResponse(br, nil)
 	/*resp, err := client.httpClient.Post(url, "application/json", bytes.NewBuffer(jsonInput))
